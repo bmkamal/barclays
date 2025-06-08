@@ -1,5 +1,14 @@
 package com.eaglebank.demo.model;
 
+import jakarta.persistence.Embeddable;
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
 public class Address {
     private String line1;
     private String line2;
