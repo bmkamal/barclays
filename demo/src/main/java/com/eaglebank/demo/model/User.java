@@ -1,16 +1,15 @@
 package com.eaglebank.demo.model;
 
+import com.eaglebank.demo.controller.dto.user.UserResponseDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,4 +26,16 @@ public class User {
     private Set<BankAccount> accounts;
     private OffsetDateTime createdTimestamp;
     private OffsetDateTime updatedTimestamp;
+
+    public UserResponseDto toResponseDto() {
+        return UserResponseDto.builder()
+                .id(this.id)
+                .name(this.name)
+                .address(this.address.toDto())
+                .email(this.email)
+                .phoneNumber(this.phoneNumber)
+                .createdTimestamp(this.createdTimestamp)
+                .updatedTimestamp(this.updatedTimestamp)
+                .build();
+    }
 }
