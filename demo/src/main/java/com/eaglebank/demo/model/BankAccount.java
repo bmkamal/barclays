@@ -24,7 +24,8 @@ public class BankAccount {
     private String currency;
     private String sortCode;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") private User user;
+    @JoinColumn(name = "user_id")
+    private User user;
     @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
     private OffsetDateTime createdTimestamp;
