@@ -1,14 +1,14 @@
 package com.eaglebank.demo.controller.dto;
 
-import lombok.Builder;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
-public class ErrorResponse {
-    private LocalDateTime timestamp = LocalDateTime.now();
-    private String exception;
-    private String message;
-    private String path;
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public class ErrorResponse {
+        private final String message;
 }
 
