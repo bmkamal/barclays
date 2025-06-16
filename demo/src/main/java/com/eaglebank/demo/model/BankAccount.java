@@ -1,5 +1,6 @@
 package com.eaglebank.demo.model;
 
+import com.eaglebank.demo.controller.dto.bankaccount.BankAccountResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,4 +31,17 @@ public class BankAccount {
     private List<Transaction> transactions;
     private OffsetDateTime createdTimestamp;
     private OffsetDateTime updatedTimestamp;
+
+    public  BankAccountResponseDto toResponseDto() {
+        return BankAccountResponseDto.builder()
+                .accountNumber(this.getAccountNumber())
+                .name(this.getName())
+                .accountType(this.getAccountType())
+                .balance(this.getBalance())
+                .currency(this.getCurrency())
+                .sortCode(this.getSortCode())
+                .createdTimestamp(this.getCreatedTimestamp())
+                .updatedTimestamp(this.getUpdatedTimestamp())
+                .build();
+    }
 }
