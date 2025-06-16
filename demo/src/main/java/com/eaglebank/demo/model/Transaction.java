@@ -1,5 +1,6 @@
 package com.eaglebank.demo.model;
 
+import com.eaglebank.demo.controller.dto.transaction.TransactionResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,4 +27,16 @@ public class Transaction {
     @JoinColumn(name = "account_number")
     private BankAccount bankAccount;
     private OffsetDateTime createdTimestamp;
+
+    public TransactionResponseDto toResponseDto() {
+        return TransactionResponseDto.builder()
+                .id(this.getId())
+                .amount(this.getAmount())
+                .type(this.getType())
+                .currency(this.getCurrency())
+                .bankAccountNumber(this.getBankAccount().getAccountNumber())
+                .reference(this.getReference())
+                .createdTimestamp(this.getCreatedTimestamp())
+                .build();
+    }
 }
