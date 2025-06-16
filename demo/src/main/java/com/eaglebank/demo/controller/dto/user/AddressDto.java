@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 public class AddressDto{
     @NotBlank
-    String line1;
-    private String line2;
-    private String line3;
+    private final String line1;
+    private final String line2;
+    private final String line3;
     @NotBlank
-    private String town;
+    private final String town;
     @NotBlank
-    private String county;
+    private final String county;
     @NotBlank
-    private String postcode;
+    private final String postcode;
 }
 

@@ -1,16 +1,18 @@
 package com.eaglebank.demo.controller.dto.user;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.OffsetDateTime;
 
 @Builder
+@Getter
 public class UserResponseDto{
-    String id;
-    String name;
-    AddressDto address;
-    String email;
-    String phoneNumber;
-    OffsetDateTime createdTimestamp;
-    OffsetDateTime updatedTimestamp;
+    private final String id;
+    private final String name;
+    private final AddressDto address;
+    private final String email;
+    private final String phoneNumber;
+    private final OffsetDateTime createdTimestamp;
+    private final OffsetDateTime updatedTimestamp;
 }
