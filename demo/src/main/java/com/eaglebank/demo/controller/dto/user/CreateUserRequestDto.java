@@ -6,15 +6,24 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 
-public record CreateUserRequestDto(
-        @NotBlank String name,
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CreateUserRequestDto{
+        @NotBlank
+        private String name;
         @NotNull
         @Valid
-        AddressDto address,
-        @NotBlank @Email String email,
+        private AddressDto address;
+        @NotBlank @Email
+        private String email;
         @NotBlank @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
-        String phoneNumber,
+        private String phoneNumber;
         @NotBlank
-        @Size(min = 8) String password
-) {}
+        @Size(min = 8)
+        private String password;
+}
