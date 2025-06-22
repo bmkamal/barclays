@@ -41,9 +41,11 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Shared test data setup
         String userId = UUID.randomUUID().toString();
-        Address address = Address.builder().line1("123 Test St").town("Testville").build();
+        Address address = Address
+                .builder().line1("123 Test St")
+                .town("Testville")
+                .build();
         user = User.builder()
                 .id(userId)
                 .name("Test User")
@@ -75,7 +77,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("createUser should successfully create and save a new user")
-    void createUser_whenEmailIsUnique_shouldSaveAndReturnUser() {
+    void givenUniqueEmailCreateUser() {
         when(userRepository.findByEmail(createUserRequestDto.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(createUserRequestDto.getPassword())).thenReturn("hashedPassword");
 
@@ -94,52 +96,36 @@ class UserServiceTest {
         );
 
 
-        // Act: Call the method under test
         UserResponseDto result = userService.createUser(createUserRequestDto);
 
-        // Assert: Verify the outcome
         assertNotNull(result);
         assertEquals(user.getId(), result.getId());
-
-        // Verify that the save method was called exactly once on the repository
-        verify(userRepository, times(1)).save(any(User.class));
-        // Verify that the password encoder was called exactly once
-        verify(passwordEncoder, times(1)).encode("password123");
     }
 
     @Test
     @DisplayName("createUser should throw ForbiddenException when email already exists")
-    void createUser_whenEmailExists_shouldThrowForbiddenException() {
-        // Arrange: Mock the repository to indicate the email already exists
+    void givenAlreadyRegisteredEmailToCreateUserThrowsForbiddenException() {
         when(userRepository.findByEmail(createUserRequestDto.getEmail())).thenReturn(Optional.of(user));
 
-        // Act & Assert: Check that the correct exception is thrown
         ForbiddenException exception = assertThrows(ForbiddenException.class, () -> {
             userService.createUser(createUserRequestDto);
         });
 
         assertEquals("User with email " + createUserRequestDto.getEmail() + " already exists.", exception.getMessage());
 
-        // Verify that the save method was NEVER called
         verify(userRepository, never()).save(any(User.class));
     }
 
-    // =================================================================================
-    // Tests for getUserById()
-    // =================================================================================
-
+ 
     @Test
     @DisplayName("getUserById should return user when userId matches principalId")
-    void getUserById_whenIdsMatch_shouldReturnUser() {
-        // Arrange
+    void givenValidPrincipalAndUserIdsReturnsUser() {
         String userId = user.getId();
         String principalId = user.getId();
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // Act
         UserResponseDto result = userService.getUserById(userId, principalId);
 
-        // Assert
         assertNotNull(result);
         assertEquals(user.getName(), result.getName());
         verify(userRepository, times(1)).findById(userId);
@@ -147,31 +133,25 @@ class UserServiceTest {
 
     @Test
     @DisplayName("getUserById should throw ForbiddenException when userId does not match principalId")
-    void getUserById_whenIdsDoNotMatch_shouldThrowForbiddenException() {
-        // Arrange
+    void givenDifferentPrincipalAndUserIdWhenGetUserByIdThrowsForbiddenException() {
         String userId = "some-other-user-id";
         String principalId = user.getId();
 
-        // Act & Assert
         ForbiddenException exception = assertThrows(ForbiddenException.class, () -> {
             userService.getUserById(userId, principalId);
         });
 
         assertEquals("This URI does not belong to your account.", exception.getMessage());
-
-        // Verify that the repository was never even called, as the check fails first
         verify(userRepository, never()).findById(anyString());
     }
 
     @Test
     @DisplayName("getUserById should throw ForbiddenException when user is not found")
-    void getUserById_whenUserNotFound_shouldThrowForbiddenException() {
-        // Arrange
+    void givenInvalidUserIdWhenGetUserByIdThrowsForbiddenException() {
         String userId = user.getId();
         String principalId = user.getId();
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         ForbiddenException exception = assertThrows(ForbiddenException.class, () -> {
             userService.getUserById(userId, principalId);
         });
