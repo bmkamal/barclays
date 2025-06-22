@@ -40,7 +40,7 @@ public class AuthService {
 
         String userId = userRepository.findByEmail(loginRequest.getEmail())
                 .map(User::getId)
-                .orElseThrow(() -> new NotFoundException("User not found after successful authentication. This should not happen."));
+                .orElseThrow(() -> new NotFoundException("User not found."));
 
         Instant now = Instant.now();
         long expiry = 36000L;
