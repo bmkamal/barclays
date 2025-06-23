@@ -3,13 +3,19 @@ package com.eaglebank.demo.controller.dto.user;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-public record UpdateUserRequestDto(
-        String name,
+@Builder
+@Getter
+@Setter
+public class UpdateUserRequestDto{
+        private String name;
         @Valid
-        AddressDto address,
+        private AddressDto address;
         @Email
-        String email,
+        private String email;
         @Pattern(regexp = "^\\+[1-9]\\d{1,14}$")
-        String phoneNumber
-) {}
+        private String phoneNumber;
+}

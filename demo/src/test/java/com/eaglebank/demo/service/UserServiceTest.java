@@ -1,6 +1,7 @@
 package com.eaglebank.demo.service;
 
 import com.eaglebank.demo.controller.dto.user.CreateUserRequestDto;
+import com.eaglebank.demo.controller.dto.user.UpdateUserRequestDto;
 import com.eaglebank.demo.controller.dto.user.UserResponseDto;
 import com.eaglebank.demo.controller.dto.user.AddressDto;
 import com.eaglebank.demo.exception.ForbiddenException;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,10 +40,11 @@ class UserServiceTest {
 
     private User user;
     private CreateUserRequestDto createUserRequestDto;
+    private String userId;
 
     @BeforeEach
     void setUp() {
-        String userId = UUID.randomUUID().toString();
+        userId = UUID.randomUUID().toString();
         Address address = Address
                 .builder().line1("123 Test St")
                 .town("Testville")
@@ -116,7 +119,7 @@ class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
- 
+
     @Test
     @DisplayName("getUserById should return user when userId matches principalId")
     void givenValidPrincipalAndUserIdsReturnsUser() {
@@ -158,5 +161,32 @@ class UserServiceTest {
 
         assertEquals("User not found with ID: " + userId, exception.getMessage());
         verify(userRepository, times(1)).findById(userId);
+    }
+
+    @Test
+    void givenValidUserIdAndRequestWhenUpdateUserThenReturnUpdatedUser() {
+        //AddressDto updatedAddressDto =  addressDto;
+        String principalId = userId;
+        UpdateUserRequestDto updateRequest = UpdateUserRequestDto.builder()
+                .name("Updated Name")
+                .email("updated@example.com")
+                .phoneNumber("+2222222222")
+                        .build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        UserResponseDto result = userService.updateUser(userId, updateRequest, principalId);
+
+        assertNotNull(result);
+        assertEquals("Updated Name", result.getName());
+        assertEquals("updated@example.com", result.getEmail());
+        assertEquals("+2222222222", result.getPhoneNumber());
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository, times(1)).save(userCaptor.capture());
+        assertEquals("Updated Name", userCaptor.getValue().getName());
+
+
     }
 }

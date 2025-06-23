@@ -1,6 +1,7 @@
 package com.eaglebank.demo.controller;
 
 import com.eaglebank.demo.controller.dto.user.CreateUserRequestDto;
+import com.eaglebank.demo.controller.dto.user.UpdateUserRequestDto;
 import com.eaglebank.demo.controller.dto.user.UserResponseDto;
 import com.eaglebank.demo.model.User;
 import com.eaglebank.demo.service.UserService;
@@ -29,5 +30,10 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDto> fetchUserByID(@PathVariable String userId, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.getUserById(userId, jwt.getSubject()));
+    }
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable String userId
+            , @AuthenticationPrincipal Jwt jwt, @RequestBody UpdateUserRequestDto request) {
+        return ResponseEntity.ok(userService.updateUser(userId, request, jwt.getSubject()));
     }
 }
