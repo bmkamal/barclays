@@ -31,7 +31,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> fetchUserByID(@PathVariable String userId, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.getUserById(userId, jwt.getSubject()));
     }
-    @PutMapping("/{userId}")
+    @PatchMapping("/{userId}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable String userId
             , @AuthenticationPrincipal Jwt jwt, @RequestBody UpdateUserRequestDto request) {
         return ResponseEntity.ok(userService.updateUser(userId, request, jwt.getSubject()));
